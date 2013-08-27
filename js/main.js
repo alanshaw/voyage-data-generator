@@ -60,6 +60,7 @@
         $(this).attr("disabled", false)
       })
     }
+    outputData()
   })
 
   function addMarker (e) {
@@ -105,6 +106,11 @@
 
     waypoints.push(L.marker(e.latlng, {icon: icon, iconAngle: heading}).addTo(map))
 
+    outputData()
+    drawTracks()
+  }
+  
+  function outputData () {
     if (opts.csv()) {
       output.html(
         voyageData.map(function (d) {
@@ -114,8 +120,6 @@
     } else {
       output.html(JSON.stringify(voyageData))
     }
-
-    drawTracks()
   }
 
   var tracks = null
