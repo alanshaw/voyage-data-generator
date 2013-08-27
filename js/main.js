@@ -43,6 +43,24 @@
     clearTimeout(addMarkerTimeoutId)
     addMarkerAllowed = true
   })
+  
+  // If CSV is checked, all others should become unchecked
+  var optCsv = $("#opt-csv")
+  
+  optCsv.change(function () {
+    if (opts.csv()) {
+      $('[id^="opt-"]').each(function () {
+        var opt = $(this)
+        if (opt.attr("id") != "opt-csv") {
+          opt.attr("checked", false).attr("disabled", true)
+        }
+      })
+    } else {
+      $('[id^="opt-"]').each(function () {
+        $(this).attr("disabled", false)
+      })
+    }
+  })
 
   function addMarker (e) {
 
@@ -87,7 +105,15 @@
 
     waypoints.push(L.marker(e.latlng, {icon: icon, iconAngle: heading}).addTo(map))
 
-    output.html(JSON.stringify(voyageData))
+    if (opts.csv()) {
+      output.html(
+        voyageData.map(function (d) {
+          return d.latitude + "," + d.longitude
+        }).join("\n")
+      )
+    } else {
+      output.html(JSON.stringify(voyageData))
+    }
 
     drawTracks()
   }
